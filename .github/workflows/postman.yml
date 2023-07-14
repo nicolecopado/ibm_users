@@ -1,0 +1,95 @@
+# # This is a basic workflow to help you get started with Actions
+
+# name: Postman CI
+
+# # Controls when the workflow will run
+# on:
+#   # Triggers the workflow on push or pull request events but only for the main branch
+#   push:
+#     branches: [ dev ]
+#   pull_request:
+#     branches: [ dev ]
+
+#   # Allows you to run this workflow manually from the Actions tab
+#   workflow_dispatch:
+
+# # A workflow run is made up of one or more jobs that can run sequentially or in parallel
+# jobs:
+#   # This workflow contains a single job called "build"
+#   build:
+#     # The type of runner that the job will run on
+#     runs-on: ubuntu-latest
+
+#     # Steps represent a sequence of tasks that will be executed as part of the job
+#     steps:
+#       - uses: actions/checkout@v3
+      
+#       - name: Setup Node.js environment
+#         uses: actions/setup-node@v3.2.0
+#         with: 
+#           node-version: 16.15
+      
+#       - name: Install Packages Microservice Peripherals
+#         run: npm --prefix ./ibm-peripherals install
+        
+#       - name: Install Packages Microservice Users
+#         run: npm --prefix ./ibm-users install
+        
+#       - name: Create .env file ibm-users
+#         run: |
+#           touch ./ibm-users/.env
+#           echo -n 'DATABASE_STRING="DATABASE=' >> ./ibm-users/.env
+#           echo -n ${{ secrets.DATABASE }} >> ./ibm-users/.env 
+#           echo -n ';HOSTNAME=' >> ./ibm-users/.env
+#           echo -n ${{ secrets.HOSTNAME }} >> ./ibm-users/.env 
+#           echo -n ';PORT=' >> ./ibm-users/.env
+#           echo -n ${{ secrets.PORT }} >> ./ibm-users/.env 
+#           echo -n ';PROTOCOL=' >> ./ibm-users/.env
+#           echo -n ${{ secrets.PROTOCOL }} >> ./ibm-users/.env
+#           echo -n ';UID=' >> ./ibm-users/.env
+#           echo -n ${{ secrets.UID }} >> ./ibm-users/.env
+#           echo -n ';PWD=' >> ./ibm-users/.env
+#           echo -n ${{ secrets.PWD }} >> ./ibm-users/.env
+#           echo -n ';SECURITY=' >> ./ibm-users/.env
+#           echo -n ${{ secrets.SECURITY }} >> ./ibm-users/.env
+#           echo  '"' >> ./ibm-users/.env
+#           echo -n 'JWT_SECRETKEY="' >> ./ibm-users/.env
+#           echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-users/.env
+#           echo -n '"' >> ./ibm-users/.env
+          
+#       - name: Create .env file ibm-peripherals
+#         run: |
+#           touch ./ibm-peripherals/.env
+#           echo -n 'DATABASE_STRING="DATABASE=' >> ./ibm-peripherals/.env
+#           echo -n ${{ secrets.DATABASE }} >> ./ibm-peripherals/.env 
+#           echo -n ';HOSTNAME=' >> ./ibm-peripherals/.env
+#           echo -n ${{ secrets.HOSTNAME }} >> ./ibm-peripherals/.env 
+#           echo -n ';PORT=' >> ./ibm-peripherals/.env
+#           echo -n ${{ secrets.PORT }} >> ./ibm-peripherals/.env 
+#           echo -n ';PROTOCOL=' >> ./ibm-peripherals/.env
+#           echo -n ${{ secrets.PROTOCOL }} >> ./ibm-peripherals/.env
+#           echo -n ';UID=' >> ./ibm-peripherals/.env
+#           echo -n ${{ secrets.UID }} >> ./ibm-peripherals/.env
+#           echo -n ';PWD=' >> ./ibm-peripherals/.env
+#           echo -n ${{ secrets.PWD }} >> ./ibm-peripherals/.env
+#           echo -n ';SECURITY=' >> ./ibm-peripherals/.env
+#           echo -n ${{ secrets.SECURITY }} >> ./ibm-peripherals/.env
+#           echo '"' >> ./ibm-peripherals/.env
+#           echo -n 'JWT_SECRETKEY="' >> ./ibm-peripherals/.env
+#           echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-peripherals/.env
+#           echo -n '"' >> ./ibm-peripherals/.env
+
+#       - name: Run Microservice Peripherals
+#         run: |
+#           cd ./ibm-peripherals
+#           node . &
+        
+#       - name: Run Microservice Users
+#         run: |
+#           cd ./ibm-users
+#           node . &
+        
+#       - name: Newman Action
+#         uses: matt-ball/newman-action@v1.0.4
+#         with: 
+#           collection: https://www.getpostman.com/collections/508f9ed32085ffc1f358

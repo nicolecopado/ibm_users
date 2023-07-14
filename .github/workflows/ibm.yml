@@ -1,0 +1,176 @@
+# This workflow will build a docker container, publish it to IBM Container Registry, and deploy it to IKS when there is a push to the main branch.
+#
+# To configure this workflow:
+#
+# 1. Ensure that your repository contains a Dockerfile
+# 2. Setup secrets in your repository by going to settings: Create ICR_NAMESPACE and IBM_CLOUD_API_KEY
+# 3. Change the values for the IBM_CLOUD_REGION, REGISTRY_HOSTNAME, IMAGE_NAME, IKS_CLUSTER, DEPLOYMENT_NAME, and PORT
+
+name: Build and Deploy to IKS
+
+on:
+  push:
+    branches:
+      - main
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  GITHUB_SHA: ${{ github.sha }}
+  IBM_CLOUD_API_KEY: ${{ secrets.IBM_CLOUD_API_KEY }}
+  IBM_CLOUD_REGION: us-south
+  ICR_NAMESPACE: ${{ secrets.ICR_NAMESPACE }}
+  REGISTRY_HOSTNAME: us.icr.io
+  IMAGE_NAME: iks-test
+  IKS_CLUSTER: cabtat4f0q63b3k8j4p0
+  DEPLOYMENT_NAME: ibm-users2
+  PORT: 4000
+  PORT2: 4001
+  PORT3: 8080
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Download and Install IBM Cloud CLI
+    - name: Install IBM Cloud CLI
+      run: |
+        curl -fsSL https://clis.cloud.ibm.com/install/linux | sh
+        ibmcloud --version
+        ibmcloud config --check-version=false
+        ibmcloud plugin install -f kubernetes-service
+        ibmcloud plugin install -f container-registry
+
+    # Authenticate with IBM Cloud CLI
+    - name: Authenticate with IBM Cloud CLI
+      run: |
+        ibmcloud login --apikey "${IBM_CLOUD_API_KEY}" -r "${IBM_CLOUD_REGION}" -g Default
+        ibmcloud cr login
+        
+     # Build the Docker image FRONT
+    - name: Build with Docker front service
+      run: |
+        docker build -t ibm-front ./ibm-front
+
+    # Push the image to IBM Container Registry
+    - name: Push the image to ICR
+      run: |
+        docker tag ibm-front us.icr.io/ibm-app/ibm-front:$GITHUB_SHA
+        docker push us.icr.io/ibm-app/ibm-front:$GITHUB_SHA
+
+    # Deploy the Docker image to the IKS cluster
+    - name: Deploy to IKS
+      run: |
+        ibmcloud ks cluster config --cluster $IKS_CLUSTER
+        kubectl config current-context
+        kubectl create deployment d3 --image=us.icr.io/ibm-app/ibm-front:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
+        kubectl apply -f deployment.yaml
+        kubectl rollout status deployment/d3
+        kubectl create service loadbalancer d3 --tcp=80:$PORT3 --dry-run -o yaml > service.yaml
+        kubectl apply -f service.yaml
+        kubectl get services -o wide
+
+    - name: Create .env file ibm-users
+      run: |
+        touch ./ibm-users/.env
+        echo -n 'DATABASE_STRING="DATABASE=' >> ./ibm-users/.env
+        echo -n ${{ secrets.DATABASE }} >> ./ibm-users/.env 
+        echo -n ';HOSTNAME=' >> ./ibm-users/.env
+        echo -n ${{ secrets.HOSTNAME }} >> ./ibm-users/.env 
+        echo -n ';PORT=' >> ./ibm-users/.env
+        echo -n ${{ secrets.PORT }} >> ./ibm-users/.env 
+        echo -n ';PROTOCOL=' >> ./ibm-users/.env
+        echo -n ${{ secrets.PROTOCOL }} >> ./ibm-users/.env
+        echo -n ';UID=' >> ./ibm-users/.env
+        echo -n ${{ secrets.UID }} >> ./ibm-users/.env
+        echo -n ';PWD=' >> ./ibm-users/.env
+        echo -n ${{ secrets.PWD }} >> ./ibm-users/.env
+        echo -n ';SECURITY=' >> ./ibm-users/.env
+        echo -n ${{ secrets.SECURITY }} >> ./ibm-users/.env
+        echo  '"' >> ./ibm-users/.env
+        echo -n 'JWT_SECRETKEY="' >> ./ibm-users/.env
+        echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-users/.env
+        echo  '"' >> ./ibm-users/.env
+        echo -n 'IP_FRONT="' >> ./ibm-users/.env
+        echo -n ${{ secrets.IP_FRONT }} >> ./ibm-users/.env
+        echo -n '"' >> ./ibm-users/.env
+
+    # Build the Docker image USERS
+    - name: Build with Docker users service
+      run: |
+        docker build -t ibm-users ./ibm-users 
+
+    # Push the image to IBM Container Registry
+    - name: Push the image to ICR
+      run: |
+        ibmcloud cr region-set us-south
+        docker tag ibm-users us.icr.io/ibm-app/ibm-users:$GITHUB_SHA
+        docker push us.icr.io/ibm-app/ibm-users:$GITHUB_SHA
+
+    # Deploy the Docker image to the IKS cluster
+    - name: Deploy to IKS
+      run: |
+        ibmcloud ks cluster config --cluster $IKS_CLUSTER
+        kubectl config current-context
+        kubectl create deployment d1 --image=us.icr.io/ibm-app/ibm-users:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
+        kubectl apply -f deployment.yaml
+        kubectl rollout status deployment/d1
+        kubectl create service loadbalancer d1 --tcp=80:$PORT --dry-run -o yaml > service.yaml
+        kubectl apply -f service.yaml
+        kubectl get services -o wide
+    
+    - name: Create .env file ibm-peripherals
+      run: |
+        touch ./ibm-peripherals/.env
+        echo -n 'DATABASE_STRING="DATABASE=' >> ./ibm-peripherals/.env
+        echo -n ${{ secrets.DATABASE }} >> ./ibm-peripherals/.env 
+        echo -n ';HOSTNAME=' >> ./ibm-peripherals/.env
+        echo -n ${{ secrets.HOSTNAME }} >> ./ibm-peripherals/.env 
+        echo -n ';PORT=' >> ./ibm-peripherals/.env
+        echo -n ${{ secrets.PORT }} >> ./ibm-peripherals/.env 
+        echo -n ';PROTOCOL=' >> ./ibm-peripherals/.env
+        echo -n ${{ secrets.PROTOCOL }} >> ./ibm-peripherals/.env
+        echo -n ';UID=' >> ./ibm-peripherals/.env
+        echo -n ${{ secrets.UID }} >> ./ibm-peripherals/.env
+        echo -n ';PWD=' >> ./ibm-peripherals/.env
+        echo -n ${{ secrets.PWD }} >> ./ibm-peripherals/.env
+        echo -n ';SECURITY=' >> ./ibm-peripherals/.env
+        echo -n ${{ secrets.SECURITY }} >> ./ibm-peripherals/.env
+        echo '"' >> ./ibm-peripherals/.env
+        echo -n 'JWT_SECRETKEY="' >> ./ibm-peripherals/.env
+        echo -n ${{ secrets.JWT_SECRETKEY }} >> ./ibm-peripherals/.env
+        echo  '"' >> ./ibm-peripherals/.env
+        echo -n 'IP_FRONT="' >> ./ibm-peripherals/.env
+        echo -n ${{ secrets.IP_FRONT }} >> ./ibm-peripherals/.env
+        echo -n '"' >> ./ibm-peripherals/.env
+
+    # Build the Docker image PERIPHERALS
+    - name: Build with Docker peripherals service
+      run: |
+        docker build -t ibm-peripherals ./ibm-peripherals
+
+    # Push the image to IBM Container Registry
+    - name: Push the image to ICR
+      run: |
+        docker tag ibm-peripherals us.icr.io/ibm-app/ibm-peripherals:$GITHUB_SHA
+        docker push us.icr.io/ibm-app/ibm-peripherals:$GITHUB_SHA
+        
+
+    # Deploy the Docker image to the IKS cluster
+    - name: Deploy to IKS
+      run: |
+        ibmcloud ks cluster config --cluster $IKS_CLUSTER
+        kubectl config current-context
+        kubectl create deployment d2 --image=us.icr.io/ibm-app/ibm-peripherals:$GITHUB_SHA --dry-run -o yaml > deployment.yaml
+        kubectl apply -f deployment.yaml
+        kubectl rollout status deployment/d2
+        kubectl create service loadbalancer d2 --tcp=80:$PORT2 --dry-run -o yaml > service.yaml
+        kubectl apply -f service.yaml
+        kubectl get services -o wide
+    
+  
