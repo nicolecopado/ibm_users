@@ -1,0 +1,5 @@
+name: PeripheralLoans-PrivateTest1
+instances: 1
+memory: 500M
+buildpack: staticfile_buildpack
+path: ./dist/front

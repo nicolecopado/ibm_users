@@ -1,0 +1,51 @@
+<app-menu-bar [user]="user"></app-menu-bar>
+<section class="overview-page__banner" aria-label="overview page banner">
+
+  <div class="container">
+    <h2>New Peripheral Registration</h2>
+    <form [formGroup]="deviceForm" (ngSubmit)="sendForm()">
+      <ibm-label>
+        Divice Type
+        <ibm-dropdown formControlName="deviceType" class="GoWide">
+          <ibm-dropdown-list [items]="diviceTypes"></ibm-dropdown-list>
+        </ibm-dropdown>
+      </ibm-label>
+
+      <ibm-label>
+        Divice Brand
+        <ibm-dropdown formControlName="deviceBrand" class="GoWide">
+          <ibm-dropdown-list [items]="diviceBrands"></ibm-dropdown-list>
+        </ibm-dropdown>
+      </ibm-label>
+
+      <ibm-label>
+        Divice Model
+        <input ibmText type="text" [autocomplete]="false" required formControlName="deviceModel">
+      </ibm-label>
+
+      <ibm-label>
+        Divice Description
+        <input ibmText type="text" [autocomplete]="false" required formControlName="deviceDesc">
+      </ibm-label>
+
+      <button ibmButton="secondary">Cancel Registration</button>
+      <button ibmButton="primary">Confirm Registration</button>
+    </form>
+  </div>
+</section>
+
+<ibm-modal [open]="openConfirmation" (overlaySelected)="CloseAll()">
+  <ibm-modal-header [showCloseButton]="false">
+    <p class="bx--modal-header__label bx--type-delta">{{confModal.title}}</p>
+  </ibm-modal-header>
+  <div class="bx--modal-content">
+    <h2>{{confModal.body}}</h2>
+  </div>
+  <ibm-modal-footer>
+    <ng-container>
+      <button ibmButton="primary" (click)="CloseAll()" [attr.modal-primary-focus]="true">
+        Close
+      </button>
+    </ng-container>
+  </ibm-modal-footer>
+</ibm-modal>

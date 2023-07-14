@@ -1,0 +1,25 @@
+<app-menu-bar [user]="user"></app-menu-bar>
+<section class="overview-page__banner" aria-label="overview page banner">
+
+  <div class="container">
+    <h2>Loan Confirmation</h2>
+    <ibm-tabs>
+      <ibm-toast [notificationObj]="notificationConfig" style="width:calc(100% + 2rem);"></ibm-toast>
+      <div class="CardParent">
+        <div class="c">
+          <img style="text-align:center" src="../../assets/{{Device.TYPE.toLowerCase()}}.png" width="150px"
+            padding="20px">
+          <p> {{Device.TYPE}}</p>
+        </div>
+        <span class="b">
+          <h3>
+            <svg ibmIcon="document" size="20"></svg> Device Information:
+          </h3>
+          <h4>Device: {{Device.BRAND}} {{Device.TYPE}} {{Device.MODEL}}</h4>
+          <h4>{{Device.DESCRIPTION}}</h4>
+        </span>
+      </div>
+    </ibm-tabs>
+  </div>
+
+</section>

@@ -1,0 +1,122 @@
+<app-menu-bar [user]="user"></app-menu-bar>
+<section class="overview-page__banner" aria-label="overview page banner">
+  <div class="container">
+    <h2>Peripheral Loan Registration</h2>
+    <div ibmGrid>
+      <div ibmRow>
+        <div ibmCol class="multi-selection">
+          <button ibmButton="primary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
+          <fieldset class="bx--fieldset">
+            <div ibmRow>
+              <div ibmCol>
+                <legend class="bx--label">Device Type</legend>
+              </div>
+              <div ibmCol>
+                <ibm-tag-filter *ngIf="deviceTypeFilters > 0">
+                  {{deviceTypeFilters}}
+                </ibm-tag-filter>
+              </div>
+            </div>
+            <ibm-checkbox *ngFor="let listItem of deviceType;index as i" [checked]="listItem.checked"
+              (click)="onTypeChange(i)">
+              {{ listItem.value }}
+            </ibm-checkbox>
+          </fieldset>
+          <fieldset class="bx--fieldset">
+            <div ibmRow>
+              <div ibmCol>
+                <legend class="bx--label">Device Brand</legend>
+              </div>
+              <div ibmCol>
+                <ibm-tag-filter *ngIf="deviceBrandFilters > 0">
+                  {{deviceBrandFilters}}
+                </ibm-tag-filter>
+              </div>
+            </div>
+            <ibm-checkbox *ngFor="let listItem of deviceBrands; index as i" [checked]="listItem.checked"
+              (click)="onBrandChange(i)">
+              {{ listItem.value }}
+            </ibm-checkbox>
+          </fieldset>
+        </div>
+
+        <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}">
+          <div class="CardParent">
+            <div *ngFor="let device of peripheralList; let i=index" class="DeviceCard" (click)="openModal(i)">
+              <img src="../../assets/{{device.PTYPE.toLowerCase()}}.png" alt="">
+              <div class="DeviceCard--Info">
+
+                <p>{{device.DESCRIPTION}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bx--modal-content h2 {
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.33333;
+    letter-spacing: 0.32px;
+    margin-bottom: 0.25rem;
+    color: #525252;
+  }
+
+  .bx--modal-content span {
+    padding: 1rem;
+  }
+
+</style>
+
+<ibm-modal [open]="isOpen" (overlaySelected)="closeModal()">
+  <ibm-modal-header (closeSelect)="closeModal()" [showCloseButton]="isOpen">
+    <p class="bx--modal-header__label bx--type-delta">Confirmation</p>
+    <p class="bx--modal-header__heading bx--type-beta">Please verify the information entered is correct</p>
+  </ibm-modal-header>
+  <div class="bx--modal-content">
+    <div>
+      <h2>Device Brand</h2> <span>{{device.BRAND}}</span>
+    </div>
+    <div>
+      <h2>Device Type</h2> <span>{{device.PTYPE}}</span>
+    </div>
+    <div>
+      <h2>Device Serial Number</h2> <span>{{device.SERIAL}}</span>
+    </div>
+    <form [formGroup]="loanForm" (ngSubmit)="sendForm()" class="form">
+      <ibm-label>
+        Employee E-mail
+        <input ibmText placeholder="{{user}}" required formControlName="employeeMail" />
+      </ibm-label>
+    </form>
+  </div>
+  <ibm-modal-footer>
+    <ng-container>
+      <button ibmButton="primary" (click)="sendForm()" [attr.modal-primary-focus]="true">
+        Confirm
+      </button>
+    </ng-container>
+  </ibm-modal-footer>
+</ibm-modal>
+
+
+<ibm-modal [open]="openConfirmation" (overlaySelected)="CloseAll()">
+  <ibm-modal-header (closeSelect)="closeModal()" [showCloseButton]="false">
+    <p class="bx--modal-header__label bx--type-delta">{{confModal.title}}</p>
+  </ibm-modal-header>
+  <div class="bx--modal-content">
+    <h2>{{confModal.body}}</h2>
+  </div>
+  <ibm-modal-footer>
+    <ng-container>
+      <button ibmButton="primary" (click)="CloseAll()" [attr.modal-primary-focus]="true">
+        Close
+      </button>
+    </ng-container>
+  </ibm-modal-footer>
+</ibm-modal>

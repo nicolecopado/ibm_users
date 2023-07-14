@@ -1,0 +1,33 @@
+<app-menu-bar *ngIf="user" [user]="user"></app-menu-bar>
+
+<section class="overview-page__banner" aria-label="overview page banner">
+  <div class="container">
+    <h2>
+      {{ title }}
+      <a ibmButton="primary" (click)="downloadCSV()" style="float: right;">Download Data</a>
+    </h2>
+    <ibm-tabs>
+      <div class="CardParent">
+        <div class="DeviceCard" *ngFor="let element of StatusInfoList">
+          <div class="DeviceCard--Info">
+            <p style="font-size: 24px; font-weight: bold;letter-spacing:0.5px;">{{element.LOAN_STATUS}}</p>
+            <hr>
+            <p style="font-size: 20px; font-weight: bold;">{{element.NUM_LOANS}}</p>
+            <p>Loans</p>
+          </div>
+        </div>
+      </div>
+    </ibm-tabs>
+    <div class="LoanChart">
+      <div class="chart">
+        <ibm-simple-bar-chart [data]="deviceData" [options]="deviceDataOptions"></ibm-simple-bar-chart>
+      </div>
+      <div class="chart">
+        <ibm-donut-chart [data]="deviceAvailability" [options]="deviceAvailabilityOptions"></ibm-donut-chart>
+      </div>
+      <div class="chart">
+        <ibm-donut-chart [data]="loansByArea" [options]="loansByAreaOptions"></ibm-donut-chart>
+      </div>
+    </div>
+  </div>
+</section>

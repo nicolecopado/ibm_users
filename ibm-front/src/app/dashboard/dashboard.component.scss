@@ -1,0 +1,75 @@
+@import '~carbon-components/scss/globals/scss/styles';
+@import "https://fonts.googleapis.com/css?family=IBM+Plex+Sans+Condensed|IBM+Plex+Sans:400,600&display=swap";
+
+.overview-page__banner {
+    min-height: 100vh;
+    padding: $spacing-06;
+    padding-top: $spacing-08;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.container {
+    width: 80%;
+    z-index: 100;
+    padding: $spacing-08;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: $spacing-06;
+    grid-auto-rows: minmax(100px, auto);
+}
+
+.CardParent {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: $spacing-08;
+}
+
+.DeviceCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: $spacing-03;
+    background-color: $ibm-color__gray-10;
+}
+
+.DeviceCard--Info {
+    width: 100%;
+    color: $ibm-color__gray-100;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+hr {
+    display: block;
+    width: 14rem;
+    height: 1px;
+    border: none;
+    margin: $spacing-03 $spacing-05;
+    background: $ibm-color__white-0;
+}
+
+.chart {
+    width: 30%;
+    background-color: #f4f4f4;
+    display: inline-block;
+    padding: $spacing-10;
+}
+
+.LoanChart {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+@media screen and (min-width: 1515px) {
+    .banner__title {
+        font-size: 50px;
+    }
+
+    .banner__subtitle {
+        font-size: 28px;
+    }
+}

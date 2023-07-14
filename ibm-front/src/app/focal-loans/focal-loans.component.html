@@ -1,0 +1,142 @@
+<style>
+  ibm-list-column>span {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+
+</style>
+
+<app-menu-bar [user]="user"></app-menu-bar>
+<section class="overview-page__banner" aria-label="overview page banner">
+
+  <div class="container">
+    <h2>Loans</h2>
+
+    <div ibmGrid>
+      <div ibmRow>
+        <div ibmCol>
+          <div class="bx--search bx--search--lg" role="search" tabindex="0">
+            <label class="bx--label" for="search-20" style="width : 100%;">Search</label>
+            <input class="bx--search-input" type="text" id="search-20" autocomplete="on" placeholder="Search"
+              style="width : 100%;" (keyup)="checkPin($event)">
+            <svg class="bx--search-magnifier-icon" ibmIcon="search" size="16" xmlns="" focusable="false"
+              preserveAspectRatio="xMidYMid meet" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"></svg>
+          </div>
+        </div>
+        <div ibmCol>
+          <a ibmButton="primary" [routerLink]="['../../newloan']" style="float: right;">Request Loan</a>
+          <a ibmButton="ghost" [routerLink]="['../../newperipheral']" style="float: right;">New Device</a>
+        </div>
+      </div>
+      <div ibmRow>
+        <div ibmCol>
+          <button ibmButton="secondary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
+          <fieldset class="bx--fieldset">
+            <legend class="bx--label">Device Status</legend>
+            <ibm-radio-group aria-label="radiogroup" orientation="vertical" labelPlacement="right">
+              <ibm-radio *ngFor="let radio of deviceStatus; index as i" [checked]="radio.checked" [value]="radio.value" (click)="onStatusChange(i)">
+                {{radio.value}}
+              </ibm-radio>
+            </ibm-radio-group>
+          </fieldset>
+          <fieldset class="bx--fieldset">
+            <div ibmRow>
+              <div ibmCol>
+                <legend class="bx--label">Device Type</legend>
+              </div>
+              <div ibmCol>
+                <ibm-tag-filter *ngIf="deviceTypeFilters > 0">
+                  {{deviceTypeFilters}}
+                </ibm-tag-filter>
+              </div>
+            </div>
+            <ibm-checkbox *ngFor="let listItem of deviceType; index as i" [checked]="listItem.checked" (click)="onTypeChange(i)">
+              {{ listItem.value }}
+            </ibm-checkbox>
+          </fieldset>
+          <fieldset class="bx--fieldset">
+            <div ibmRow>
+              <div ibmCol>
+                <legend class="bx--label">Device Brand</legend>
+              </div>
+              <div ibmCol>
+                <ibm-tag-filter *ngIf="deviceBrandFilters > 0">
+                  {{deviceBrandFilters}}
+                </ibm-tag-filter>
+              </div>
+            </div>
+            <ibm-checkbox *ngFor="let listItem of deviceBrands; index as i" [checked]="listItem.checked" (click)="onBrandChange(i)">
+              {{ listItem.value }}
+            </ibm-checkbox>
+          </fieldset>
+        </div>
+        <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}">
+          <ibm-structured-list>
+            <ibm-list-header>
+              <ibm-list-column *ngFor="let product of columns" class="listColumn--Header">
+                <span>{{product}}</span>
+              </ibm-list-column>
+              <ibm-list-column></ibm-list-column>
+            </ibm-list-header>
+            <ibm-list-row *ngFor="let emp of areaLoans ;let i = index">
+              <ibm-list-column class="listColumn">
+                {{emp.EMPLOYEE_NAME}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{emp.BRAND}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{emp.TYPE}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{emp.CREATION}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                <span>
+                  <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"
+                    *ngIf="emp.CONDITION_ACCEPTED == true else CROSS"></svg>
+                  <ng-template #CROSS>
+                    <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
+                  </ng-template>
+                </span>
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                <span>
+                  <svg ibmIcon="checkmark--filled" size="20" style="width: 50%;"
+                    *ngIf="emp.SECURITY_AUTH == true else CROSS"></svg>
+                  <ng-template #CROSS>
+                    <svg ibmIcon="close" size="20" style="width: 50%;"></svg>
+                  </ng-template>
+                </span>
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{emp.LOAN_STATUS}}
+              </ibm-list-column>
+              <ibm-list-column>
+                <button ibmButton="secondary" (click)="openModal(i)">Modify</button>
+              </ibm-list-column>
+            </ibm-list-row>
+          </ibm-structured-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<ibm-modal [open]="isOpen" (overlaySelected)="closeModal()">
+  <ibm-modal-header (closeSelect)="closeModal()" [showCloseButton]="isOpen">
+    <h2 ibmModalHeaderLabel>{{specific.LOAN_ID}}</h2>
+    <h3 ibmModalHeaderHeading>{{specific.EMPLOYEE_NAME}}</h3>
+  </ibm-modal-header>
+  <section ibmModalContent>
+    <h1>{{specific.BRAND}} {{specific.TYPE}} {{specific.MODEL}}</h1>
+    <p>{{specific.DESCRIPTION}}</p>
+    <p ibmModalContentText>{{specific.PERIPHERAL_SERIAL}}</p>
+    <p>{{specific.CREATION}} - {{specific.CONCLUDED || 'Present'}}</p>
+  </section>
+  <ibm-modal-footer>
+    <button class="bx--btn bx--btn--secondary" (click)="cancel()" *ngIf="specific.SECURITY_AUTH == false">Cancel Registration</button>
+    <button class="bx--btn bx--btn--primary" modal-primary-focus (click)="returnDevice()" *ngIf="specific.LOAN_STATUS == 'Borrowed'">Update Registration</button>
+  </ibm-modal-footer>
+</ibm-modal>

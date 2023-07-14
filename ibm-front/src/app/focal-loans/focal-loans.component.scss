@@ -1,0 +1,30 @@
+@import '~carbon-components/scss/globals/scss/styles';
+
+.overview-page__banner {
+    min-height: 100vh;
+    padding: $spacing-06;
+    padding-top: $spacing-08;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.container {
+    width: 80%;
+    z-index: 100;
+    padding: $spacing-08;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: $spacing-06;
+    grid-auto-rows: minmax(100px, auto);
+}
+
+ibm-list-column.listColumn {
+    padding: $spacing-05 $spacing-03;
+    vertical-align: middle;
+}
+
+ibm-list-column.listColumn--Header {
+    padding: $spacing-03;
+    vertical-align: middle;
+}

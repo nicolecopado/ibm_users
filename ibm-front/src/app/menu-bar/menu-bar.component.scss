@@ -1,0 +1,30 @@
+@import '~carbon-components/scss/globals/scss/styles';
+
+hr {
+    display: block;
+    width: 14rem;
+    height: 1px;
+    border: none;
+    margin: 0.5rem 1rem;
+    background: gray;
+}
+
+.c {
+    font-size: 0.25em;
+    text-align: center;
+    padding: 0px 0px 20px 0px;
+}
+
+.profile-bar-p {
+    padding: 3px;
+}
+
+#profile-anchor {
+    color: lightgray;
+    text-decoration: none;
+}
+
+#profile-anchor:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}

@@ -1,0 +1,35 @@
+<app-menu-bar [user]="user"></app-menu-bar>
+<section class="overview-page__banner" aria-label="overview page banner">
+  <div class="container">
+    <h2>Profile</h2>
+    <div class="EmployyeData">
+      <div class="c">
+        <img style="text-align:center" src="../../assets/profile.png" width="150px" padding="20px" alt="">
+        <p class="ImageText"> {{profile.FIRST_NAME}} {{profile.LAST_NAME}}</p>
+      </div>
+      <span class="b">
+        <h5><svg ibmIcon="document" size="16"></svg> General Information: </h5>
+        <p>E-mail: <a>{{profile.EMAIL}}</a></p>
+        <p>Departments: <a>{{profile.DEPARTMENT_NAME}}</a></p>
+        <p>Role: <a>{{profile.ROLE_NAME}}</a></p>
+      </span>
+    </div>
+
+    <ng-template [ngIf]="showLoans">
+      <h2 class="page-title"> {{ title }} </h2>
+      <ibm-tabs>
+        <ibm-tab *ngFor="let item of myLoans | keyvalue" heading="{{item.key}}" class="tab">
+          <div class="CardParent">
+            <div *ngFor="let device of item.value" class="DeviceCard">
+              <div class="DeviceCard--Info">
+                <p>{{device.DESCRIPTION}}</p>
+              </div>
+              <img src="../../assets/{{device.TYPE.toLowerCase()}}.png">
+            </div>
+          </div>
+        </ibm-tab>
+      </ibm-tabs>
+    </ng-template>
+
+  </div>
+</section>

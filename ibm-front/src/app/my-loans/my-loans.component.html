@@ -1,0 +1,44 @@
+<app-menu-bar [user]="user"></app-menu-bar>
+<section class="overview-page__banner" aria-label="overview page banner">
+  <div class="container">
+    <h2> {{ title }} </h2>
+    <ibm-tabs>
+      <ibm-tab *ngFor="let item of myLoans | keyvalue" heading="{{item.key}}">
+        <ng-template [ngIf]="item.value.length == 0">
+          <ibm-toast [notificationObj]="notificationMesage" style="width:calc(100% + 2rem);"></ibm-toast>
+        </ng-template>
+        <div class="CardParent">
+          <div *ngFor="let device of item.value" class="DeviceCard">
+
+            <div class="DeviceCard--Info">
+              <p>{{device.DESCRIPTION}}</p>
+            </div>
+            <img #trigger src="../../assets/{{device.TYPE.toLowerCase()}}.png" alt="" (click)="open = true">
+
+            <ibm-modal [open]="open" [trigger]="trigger" (overlaySelected)="open = false">
+              <ibm-modal-header (closeSelect)="open = false" [showCloseButton]="showCloseButton">
+                <p class="bx--modal-header__heading bx--type-beta">{{device.TYPE}}</p>
+              </ibm-modal-header>
+              <div class="bx--modal-content">
+                <p class="bx--modal-header__label bx--type-delta">Descrpition:
+                  {{device.DESCRIPTION}}</p>
+                <p class="bx--modal-header__label bx--type-delta">Loan Started:
+                  {{device.CREATION}}</p>
+                <p class="bx--modal-header__label bx--type-delta">Loan Finished:
+                  {{device.CONCLUDED}}</p>
+              </div>
+              <ibm-modal-footer>
+                <ng-container>
+                  <button ibmButton="primary" (click)="open = false" [attr.modal-primary-focus]="true">
+                    Close
+                  </button>
+                </ng-container>
+              </ibm-modal-footer>
+            </ibm-modal>
+
+          </div>
+        </div>
+      </ibm-tab>
+    </ibm-tabs>
+  </div>
+</section>

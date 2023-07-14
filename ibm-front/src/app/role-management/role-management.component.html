@@ -1,0 +1,79 @@
+<app-menu-bar [user]="user"></app-menu-bar>
+<section class="overview-page__banner" aria-label="overview page banner">
+
+  <div class="container">
+    <h2>Employee Role Management</h2>
+    <div ibmGrid class="Table">
+      <div ibmRow>
+        <div ibmCol>
+          <div class="bx--search bx--search--lg SearchBar-Row" role="search" tabindex="0">
+            <input class="bx--search-input" type="text" id="search-20" autocomplete="on" placeholder="Search"
+              style="width : 100%;" (keyup)="checkPin($event)">
+            <svg class="bx--search-magnifier-icon" ibmIcon="search" size="16" xmlns="" focusable="false"
+              preserveAspectRatio="xMidYMid meet" aria-hidden="true" width="16" height="16" viewBox="0 0 16 16"></svg>
+          </div>
+        </div>
+      </div>
+      <div ibmRow>
+        <div ibmCol class="multi-selection">
+          <button ibmButton="primary" (click)="resetFilters()" class="reset-button">Reset Filters</button>
+          <fieldset class="bx--fieldset">
+            <div ibmRow>
+              <div ibmCol>
+                <legend class="bx--label">Employee Role</legend>
+              </div>
+              <div ibmCol>
+                <ibm-tag-filter *ngIf="deviceTypeFilters.length > 0">
+                  {{deviceTypeFilters.length}}
+                </ibm-tag-filter>
+              </div>
+            </div>
+            <ibm-checkbox *ngFor="let listItem of deviceType; index as i" [checked]="listItem.checked" (change)="onRoleFilter(i)">
+              {{ listItem.value }}
+            </ibm-checkbox>
+          </fieldset>
+        </div>
+
+        <div ibmCol [columnNumbers]="{'lg': 10, 'md': 10, 'sm': 3}" class="data-table">
+          <ibm-structured-list>
+            <ibm-list-header>
+              <ibm-list-column *ngFor="let product of columns" class="listColumn--Header">
+                {{product}}
+              </ibm-list-column>
+              <ibm-list-column></ibm-list-column>
+            </ibm-list-header>
+
+            <ibm-list-row *ngFor="let emp of employees; let i = index ">
+
+              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+emp.ID]">
+                {{emp.ID}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+emp.ID]">
+                {{emp.FIRST_NAME}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+emp.ID]">
+                {{emp.LAST_NAME}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn" [routerLink]="['../profile/'+emp.ID]">
+                {{emp.EMAIL}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+                {{emp.DEPARTMENT_NAME}}
+              </ibm-list-column>
+              <ibm-list-column class="listColumn">
+
+                <ibm-dropdown
+                  placeholder="{{emp.ROLE_NAME}}"
+                  (selected)="updateRole($event, i)">
+                  <ibm-dropdown-list [items]="roles"></ibm-dropdown-list>
+                </ibm-dropdown>
+
+              </ibm-list-column>
+            </ibm-list-row>
+          </ibm-structured-list>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

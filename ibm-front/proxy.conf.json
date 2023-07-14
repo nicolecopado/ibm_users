@@ -1,0 +1,38 @@
+{
+    "/login": {
+        "target": "http://169.51.205.229:30289/login",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/login": ""
+        },
+        "changeOrigin": true
+    },
+    "/logout": {
+        "target": "http://169.51.205.229:30289/logout",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/logout": ""
+        },
+        "changeOrigin": true
+    },
+    "/isLogged": {
+        "target": "http://169.51.205.229:30289/isLogged",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/isLogged": ""
+        },
+        "changeOrigin": true
+    },
+    "/Admin/getAllUsers": {
+        "target": "http://169.51.205.229:30289/Admin/getAllUsers",
+        "secure": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/Admin/getAllUsers": ""
+        },
+        "changeOrigin": true
+    }
+}

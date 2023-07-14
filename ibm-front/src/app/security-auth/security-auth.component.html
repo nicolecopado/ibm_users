@@ -1,0 +1,33 @@
+<app-menu-bar [user]="user"></app-menu-bar>
+
+<section class="overview-page__banner" aria-label="overview page banner">
+  <div class="container">
+    <ng-template [ngIf]="charged == true">
+      <ibm-toast [notificationObj]="notificationConfig" style="width:calc(100% + 2rem);"></ibm-toast>
+    </ng-template>
+    <div class="LoanInfo">
+      <h2>Security Filter</h2>
+      <ibm-tabs>
+        <div>
+          <div class="CardParent">
+            <div class="c">
+              <p></p>
+              <img style="text-align:center" src="../../assets/{{Device.TYPE.toLowerCase()}}.png" width="150px"
+                padding="20px" alt="">
+              <p class="b"> {{Device.TYPE}}</p>
+            </div>
+            <span class="b">
+              <h3> <svg ibmIcon="document" size="20"></svg> Device Information: </h3>
+              <h4>Device: {{Device.BRAND}} {{Device.TYPE}} {{Device.MODEL}}</h4>
+              <h4>{{Device.DESCRIPTION}}</h4>
+            </span>
+          </div>
+          <div>
+            <button class="bx--btn bx--btn--secondary" (click)="cancel()">Cancel</button>
+            <button class="bx--btn bx--btn--primary" modal-primary-focus (click)="authDevice()">Authorize</button>
+          </div>
+        </div>
+      </ibm-tabs>
+    </div>
+  </div>
+</section>
